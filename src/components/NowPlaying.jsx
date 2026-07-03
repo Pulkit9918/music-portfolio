@@ -14,7 +14,7 @@ const fmt = (s) => {
 };
 
 export default function NowPlaying() {
-  const { open, setOpen, setRoom, track, playing, time, dur, analyser, toggle, next, prev, seekTo } = useAudio();
+  const { open, setOpen, track, playing, time, dur, analyser, toggle, next, prev, seekTo } = useAudio();
 
   useEffect(() => {
     const onKey = (e) => { if (e.key === "Escape") setOpen(false); };
@@ -47,9 +47,6 @@ export default function NowPlaying() {
               <h2 className="np-title">{track.title}</h2>
               <p className="np-note">{track.note}</p>
               <div className="np-controls">
-                <button className="btn" style={{ marginBottom: 24 }} onClick={() => { setRoom(true); setOpen(false); }}>
-                  Enter listening room ◈
-                </button>
                 <button onClick={prev} aria-label="Previous"><FiSkipBack size={22} /></button>
                 <button className="np-play" onClick={toggle} aria-label={playing ? "Pause" : "Play"}>
                   {playing ? <FiPause size={24} /> : <FiPlay size={24} style={{ marginLeft: 3 }} />}

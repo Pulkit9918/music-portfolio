@@ -16,7 +16,6 @@ import About from "./components/About";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import NowPlaying from "./components/NowPlaying";
-import ListeningRoom from "./components/ListeningRoom";
 import MiniPlayer from "./components/MiniPlayer";
 
 export default function App() {
@@ -74,7 +73,6 @@ export default function App() {
       <Contact />
       <Footer />
       <NowPlaying />
-      <ListeningRoom />
       <MiniPlayer />
     </AudioProvider>
   );

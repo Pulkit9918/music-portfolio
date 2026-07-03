@@ -16,7 +16,6 @@ export function AudioProvider({ children }) {
   const [dur, setDur] = useState(0);
   const [started, setStarted] = useState(false);
   const [open, setOpen] = useState(false);
-  const [room, setRoom] = useState(false);
 
   const track = tracks[current];
 
@@ -65,7 +64,7 @@ export function AudioProvider({ children }) {
   }, [toggle]);
 
   const value = {
-    tracks, track, current, playing, time, dur, analyser, started, open, setOpen, room, setRoom,
+    tracks, track, current, playing, time, dur, analyser, started, open, setOpen,
     select, next, prev, toggle, seekTo,
   };
 
