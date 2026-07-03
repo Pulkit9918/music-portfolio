@@ -1,14 +1,14 @@
 // src/components/MiniPlayer.jsx
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { FiPlay, FiPause, FiSkipForward } from "react-icons/fi";
+import { FiPlay, FiPause, FiSkipForward, FiSkipBack, FiMaximize2 } from "react-icons/fi";
 import { useAudio } from "../context/AudioProvider";
 
-const R = 27;
+const R = 26;
 const CIRC = 2 * Math.PI * R;
 
 export default function MiniPlayer() {
-  const { track, playing, time, dur, started, toggle, next, setOpen } = useAudio();
+  const { track, playing, time, dur, started, toggle, next, prev, setOpen } = useAudio();
   const [pastHero, setPastHero] = useState(false);
 
   useEffect(() => {
@@ -30,28 +30,39 @@ export default function MiniPlayer() {
           exit={{ y: 120, opacity: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
-          <button className="mini-disc-wrap" onClick={() => setOpen(true)} aria-label="Open now playing">
-            <svg className="mini-ring" width="64" height="64" viewBox="0 0 64 64">
-              <circle cx="32" cy="32" r={R} className="mini-ring-bg" />
+          {/* disc with progress ring */}
+          <div className="mini-disc-wrap">
+            <svg className="mini-ring" width="60" height="60" viewBox="0 0 60 60">
+              <circle cx="30" cy="30" r={R} className="mini-ring-bg" />
               <circle
-                cx="32" cy="32" r={R} className="mini-ring-fill"
+                cx="30" cy="30" r={R} className="mini-ring-fill"
                 style={{ strokeDasharray: CIRC, strokeDashoffset: CIRC * (1 - pct) }}
               />
             </svg>
             <span className={`mini-disc ${playing ? "spin" : ""}`}>
               <img src={track.cover} alt="" onError={(e) => (e.target.style.opacity = 0)} />
             </span>
-          </button>
+          </div>
 
           <div className="mini-meta">
             <span className="mini-title">{track.title}</span>
             <span className="mini-sub">{track.note}</span>
           </div>
 
-          <button className="mini-btn" onClick={toggle} aria-label={playing ? "Pause" : "Play"}>
-            {playing ? <FiPause size={18} /> : <FiPlay size={18} style={{ marginLeft: 2 }} />}
-          </button>
-          <button className="mini-btn ghost" onClick={next} aria-label="Next"><FiSkipForward size={18} /></button>
+          <div className="mini-controls">
+            <button className="mini-btn ghost" onClick={prev} aria-label="Previous">
+              <FiSkipBack size={16} />
+            </button>
+            <button className="mini-btn" onClick={toggle} aria-label={playing ? "Pause" : "Play"}>
+              {playing ? <FiPause size={18} /> : <FiPlay size={18} style={{ marginLeft: 2 }} />}
+            </button>
+            <button className="mini-btn ghost" onClick={next} aria-label="Next">
+              <FiSkipForward size={16} />
+            </button>
+            <button className="mini-btn ghost expand" onClick={() => setOpen(true)} aria-label="Expand player">
+              <FiMaximize2 size={16} />
+            </button>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
