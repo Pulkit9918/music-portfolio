@@ -36,7 +36,6 @@ par aankhon mein sirf tera ghar
 Google maps
 zoom in on the place we were
 
-[Pre-Chorus]
 Tu keh rahi “mat aa”
 par teri khamoshi loud
 Har dhadkan mein budget
