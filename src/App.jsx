@@ -10,7 +10,6 @@ import Nav from "./components/Nav";
 import Hero from "./components/Hero";
 import Release from "./components/Release";
 import Music from "./components/Music";
-import KineticText from "./components/KineticText";
 import Lyrics from "./components/Lyrics";
 import About from "./components/About";
 import Contact from "./components/Contact";
@@ -67,7 +66,6 @@ export default function App() {
       <Hero ready={!loading} />
       <Release />
       <Music />
-      <KineticText text="PULKIT J" />
       <Lyrics />
       <About />
       <Contact />

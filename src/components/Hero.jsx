@@ -1,7 +1,6 @@
 // src/components/Hero.jsx
 import { motion } from "framer-motion";
 import Marquee from "./Marquee";
-import AlbumCard3D from "./AlbumCard3D";
 
 const container = {
   hide: {},
@@ -27,7 +26,6 @@ export default function Hero({ ready }) {
         </motion.div>
       </motion.div>
 
-      <AlbumCard3D />
       <Marquee items={["NEW MUSIC", "COMING SOON", "PULKIT J"]} />
     </header>
   );
