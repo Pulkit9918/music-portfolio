@@ -5,9 +5,9 @@ export default function Cursor() {
   const dot = useRef(null);
 
   useEffect(() => {
-    if (window.matchMedia("(pointer: coarse)").matches) return; // skip touch
+    if (window.matchMedia("(pointer: coarse)").matches) return; // skip touch devices
     const el = dot.current;
-    let mx = 0, my = 0, x = 0, y = 0, raf;
+    let mx = window.innerWidth / 2, my = window.innerHeight / 2, x = mx, y = my, raf;
 
     const move = (e) => { mx = e.clientX; my = e.clientY; };
     const loop = () => {
@@ -19,23 +19,18 @@ export default function Cursor() {
     window.addEventListener("mousemove", move);
     loop();
 
-    const grow = () => el.classList.add("cursor--grow");
-    const shrink = () => el.classList.remove("cursor--grow");
-    const targets = document.querySelectorAll(
-      "a, button, .track, .lyric-head, .progress-bar"
-    );
-    targets.forEach((t) => {
-      t.addEventListener("mouseenter", grow);
-      t.addEventListener("mouseleave", shrink);
-    });
+    // delegation: works on any element, including ones added later
+    const SEL = "a, button, .track, .lyric-head, .progress-bar, .mini-disc-wrap, [role='button']";
+    const over = (e) => { if (e.target.closest?.(SEL)) el.classList.add("cursor--grow"); };
+    const out  = (e) => { if (e.target.closest?.(SEL)) el.classList.remove("cursor--grow"); };
+    document.addEventListener("mouseover", over);
+    document.addEventListener("mouseout", out);
 
     return () => {
       window.removeEventListener("mousemove", move);
       cancelAnimationFrame(raf);
-      targets.forEach((t) => {
-        t.removeEventListener("mouseenter", grow);
-        t.removeEventListener("mouseleave", shrink);
-      });
+      document.removeEventListener("mouseover", over);
+      document.removeEventListener("mouseout", out);
     };
   }, []);
 
