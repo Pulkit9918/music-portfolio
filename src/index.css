@@ -5,19 +5,19 @@
 
 /* ===== DESIGN TOKENS — edit these to change your whole look ===== */
 :root {
-  --bg:          #0f0e0d;   /* warm near-black */
-  --bg-elev:     #17151300; /* transparent card base */
-  --bg-card:     #1a1815;   /* slightly lifted panels */
-  --text:        #ece7dd;   /* warm cream */
-  --muted:       #928b7e;   /* warm grey */
-  --line:        #2b2823;   /* hairline borders */
-  --accent:      #c97b4a;   /* warm rust — your signature color */
-  --accent-soft: #c97b4a22;
+  --bg:          #221f1c;   /* lighter warm charcoal, not near-black */
+  --bg-elev:     #2a271f00;
+  --bg-card:     #2b2822;   /* lifted panel, clearly separate from bg now */
+  --text:        #f5f0e6;   /* brighter warm cream */
+  --muted:       #a89f8f;   /* lighter warm grey, more legible */
+  --line:        #3c3830;
+  --accent:      #e8783f;   /* bolder, more saturated rust-orange */
+  --accent-soft: #e8783f2e;
 
   --serif: 'Fraunces', Georgia, serif;
   --sans:  'Inter', system-ui, sans-serif;
 
-  --max: 1080px;            /* content width */
+  --max: 1080px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -444,7 +444,6 @@ body::before {
   .mini-sub { display: none; }
   .mini-controls .mini-btn.ghost:not(.expand) { display: none; } /* hide prev/next, keep play + expand */
 }
-
 /* ===== 3D blob ===== */
 .blob { width: 100%; height: 200px; margin-bottom: 20px; }
 
@@ -454,7 +453,7 @@ body::before {
   right: 4%; top: 50%; transform: translateY(-50%);
   width: min(42vw, 460px); height: min(42vw, 460px);
   z-index: 1;
-  pointer-events: none;               /* ← never blocks hero clicks or scroll */
+  pointer-events: none;               
 }
 @media (max-width: 820px) {
   .vinyl { position: relative; right: 0; top: 0; transform: none; width: 70vw; height: 70vw; margin: 30px auto -20px; }
@@ -535,4 +534,14 @@ body::before {
   transform-origin: bottom;
   transition: color 0.2s ease;
   will-change: transform;
+}
+/* ===== Floating 3D album card ===== */
+.album-card-3d {
+  position: absolute; right: 6%; top: 50%; transform: translateY(-50%);
+  width: min(38vw, 380px); height: min(38vw, 380px);
+  z-index: 1;
+}
+.album-card-3d canvas { display: block; }
+@media (max-width: 820px) {
+  .album-card-3d { position: relative; right: 0; top: 0; transform: none; width: 65vw; height: 65vw; margin: 30px auto -10px; }
 }

@@ -1,8 +1,7 @@
 // src/components/Hero.jsx
 import { motion } from "framer-motion";
 import Marquee from "./Marquee";
-import Magnetic from "./Magnetic";
-import Vinyl from "./Vinyl";
+import AlbumCard3D from "./AlbumCard3D";
 
 const container = {
   hide: {},
@@ -16,28 +15,20 @@ const item = {
 export default function Hero({ ready }) {
   return (
     <header className="hero" id="top">
-      <motion.div
-        className="hero-inner"
-        variants={container}
-        initial="hide"
-        animate={ready ? "show" : "hide"}
-      >
+      <motion.div className="hero-inner" variants={container} initial="hide" animate={ready ? "show" : "hide"}>
         <motion.p className="eyebrow" variants={item}>Singer · Songwriter</motion.p>
         <motion.h1 variants={item}>PULKIT J</motion.h1>
         <motion.p className="tagline" variants={item}>
           Quiet songs about loud feelings. New music coming soon.
         </motion.p>
-        <motion.div
-          variants={item}
-          style={{ marginTop: 40, display: "flex", gap: 14, flexWrap: "wrap" }}
-        >
-          <Magnetic><a href="#music" className="btn btn-fill">Listen</a></Magnetic>
-          <Magnetic><a href="#contact" className="btn">Booking</a></Magnetic>
+        <motion.div variants={item} style={{ marginTop: 40, display: "flex", gap: 14, flexWrap: "wrap" }}>
+          <a href="#music" className="btn btn-fill">Listen</a>
+          <a href="#contact" className="btn">Booking</a>
         </motion.div>
       </motion.div>
 
+      <AlbumCard3D />
       <Marquee items={["NEW MUSIC", "COMING SOON", "PULKIT J"]} />
-      <Vinyl />
     </header>
   );
 }
