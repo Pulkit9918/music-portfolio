@@ -1,11 +1,11 @@
 // src/data/lyrics.js
-// Paste your real lyrics here. Use \n or real line breaks.
 export const lyrics = [
   {
     title: "Calling Me Back",
-    text: `Phone screen glow
+    text: `
+Phone screen glow
 3 a.m. in Delhi sky
-PULKIT J there
+Your name there
 but I just let it slide
 Crowded room
 parchi parchi sa dil yahan
@@ -70,6 +70,86 @@ Jaun ya na jaun, I’m split in two
 Kyunki wahan ho tum
 it’s calling me back to you (calling me back)
 (it’s calling me back to you)`,
+  },
+  {
+    title: "Frozen",
+    text: `
+Khaali apartment, geeli deewar
+Bahar barish, andar bukhar
+Binds ke paar, roshni ka zakhm
+Main khada hoon, jaise band ek waqt
+
+Sab log bhaage, main yahin ruka
+Sheher ka shor, par dil na jaga
+Table pe chaabi, phone bhi chup
+Mere naam se hi, lagta hoon gum
+
+Aankhon mein dhuaan
+Saanson mein tha
+Kuch bhi nahi
+Phir bhi sab tha
+
+Main kaun hoon yahan
+Bol de zara
+Iss bheed mein
+Kyon hoon akela?
+
+Main frozen hoon, frozen hoon
+Is sheher mein frozen hoon
+Main kahan hoon, kahan hoon
+Apne hi andar kho gaya hoon
+Frozen hoon, frozen hoon
+Dil se main thoda door hoon
+Sab tez chale
+Main bas ruk gaya hoon (oh-oh)
+
+Lift ki awaaz, phir khaali corridor
+Khidki pe paani, jaise slow report
+Blinds ke through woh safed sa noor
+Mere chehre pe, chhod gaya blur
+
+Doston ke text, sab short aur dry
+"Busy hoon yaar" ka ek hi reply
+Main bhi likhun, phir mita doon line
+Jaise mere andar koi offline
+
+Aankhon mein dhuaan
+Saanson mein tha
+Kuch bhi nahi
+Phir bhi sab tha
+
+Main kaun hoon yahan
+Bol de zara
+Iss bheed mein
+Kyon hoon akela?
+
+Main frozen hoon, frozen hoon
+Is sheher mein frozen hoon
+Main kahan hoon, kahan hoon
+Apne hi andar kho gaya hoon
+Frozen hoon, frozen hoon
+Dil se main thoda door hoon
+Sab tez chale
+Main bas ruk gaya hoon (oh-oh)
+
+Rain on the glass
+Naam bhi dhundla
+Jis chehre ko dhoonda
+Woh bhi tha adhoora
+
+Agar main tootun
+Kya koi sunega?
+Iss concrete saal mein
+Kya koi rukega?
+
+Main frozen hoon, frozen hoon
+Is sheher mein frozen hoon
+Main kahan hoon, kahan hoon
+Apne hi andar kho gaya hoon
+Frozen hoon, frozen hoon
+Dil se main thoda door hoon
+Sab tez chale
+Main bas ruk gaya hoon (oh-oh)`,
   },
   {
     title: "NoWhere To Go",
@@ -179,87 +259,134 @@ par jhukta nahi
 
 Sab mere khilaaf
 phir bhi main chal raha
-(phir bhi main chal raha)
-`,
+(phir bhi main chal raha)`
   },
   {
-    title: "Khaali Apartment",
-    text: `
-Khaali apartment, geeli deewar
-Bahar barish, andar bukhar
-Binds ke paar, roshni ka zakhm
-Main khada hoon, jaise band ek waqt
+    title: "Lost Time",
+    text: `[Verse 1]
+Main kal se baitha tha
+Aaj bhi wohi kursi
+Ghar ki deewar pe
+Ghadi ne kaati deri
 
-Sab log bhaage, main yahin ruka
-Sheher ka shor, par dil na jaga
-Table pe chaabi, phone bhi chup
-Mere naam se hi, lagta hoon gum
+Jeb mein sapne the
+Par haath khaali rahe
+Har nayi tareekh par
+Purane ghaav jage
 
-Aankhon mein dhuaan
-Saanson mein tha
-Kuch bhi nahi
-Phir bhi sab tha
+Socha tha kal aa jaayega
+Bas ek aur saal
+Par calendar palat gaya
+Aur pal gaya haal
 
-Main kaun hoon yahan
-Bol de zara
-Iss bheed mein
-Kyon hoon akela?
+Main tayaar hi karta raha
+Apne hi kal ka ghar
+Aur waqt ne jeb se
+Nikaal liya sab kuchh
 
-Main frozen hoon, frozen hoon
-Is sheher mein frozen hoon
-Main kahan hoon, kahan hoon
-Apne hi andar kho gaya hoon
-Frozen hoon, frozen hoon
-Dil se main thoda door hoon
-Sab tez chale
-Main bas ruk gaya hoon (oh-oh)
+Dhund mein lipti saans
+Dil pe bhaari saaya
+Jo aana tha kabhi
+Woh bhi peeche aaya
 
-Lift ki awaaz, phir khaali corridor
-Khidki pe paani, jaise slow report
-Blinds ke through woh safed sa noor
-Mere chehre pe, chhod gaya blur
+Har tick mein ek daag
+Har tok mein ek zakhm
+Main yahin khada raha
+Aur umar gayi tham
 
-Doston ke text, sab short aur dry
-"Busy hoon yaar" ka ek hi reply
-Main bhi likhun, phir mita doon line
-Jaise mere andar koi offline
+Waqt ne chura liya
+Waqt ne chura liya
+Main tha, par kahin na tha
+Waqt ne chura liya
 
-Aankhon mein dhuaan
-Saanson mein tha
-Kuch bhi nahi
-Phir bhi sab tha
+Kal mera naam tha
+Aaj bas nishaan sa
+Waqt ne chura liya
+Waqt ne chura liya
 
-Main kaun hoon yahan
-Bol de zara
-Iss bheed mein
-Kyon hoon akela?
+Maa ne pucha beta
+Kab sambhlega tu
+Maine hans ke keh diya
+Bas abhi aaya hun
 
-Main frozen hoon, frozen hoon
-Is sheher mein frozen hoon
-Main kahan hoon, kahan hoon
-Apne hi andar kho gaya hoon
-Frozen hoon, frozen hoon
-Dil se main thoda door hoon
-Sab tez chale
-Main bas ruk gaya hoon (oh-oh)
+Par sach to yeh tha
+Ki main dar raha tha
+Jo bhi tha andar
+Woh sab mar raha tha
 
-Rain on the glass
-Naam bhi dhundla
-Jis chehre ko dhoonda
-Woh bhi tha adhoora
+Doston ne dekha mujhe
+Aankhon mein dhool liye
+Main chalta raha aise
+Jaise seedhiyon pe bhoole
 
-Agar main tootun
-Kya koi sunega?
-Iss concrete saal mein
-Kya koi rukega?
+Koi pal pakad lo
+Toh haath se fisal gaya
+Main apni hi zindagi ka
+Der se aaya silsila
 
-Main frozen hoon, frozen hoon
-Is sheher mein frozen hoon
-Main kahan hoon, kahan hoon
-Apne hi andar kho gaya hoon
-Frozen hoon, frozen hoon
-Dil se main thoda door hoon
-Sab tez chale
-Main bas ruk gaya hoon (oh-oh)`,
+Dhund mein lipti saans
+Dil pe bhaari saaya
+Jo aana tha kabhi
+Woh bhi peeche aaya
+
+Har tick mein ek daag
+Har tok mein ek zakhm
+Main yahin khada raha
+Aur umar gayi tham
+
+Waqt ne chura liya
+Waqt ne chura liya
+Main tha, par kahin na tha
+Waqt ne chura liya
+
+Kal mera naam tha
+Aaj bas nishaan sa
+Waqt ne chura liya
+Waqt ne chura liya
+
+Bas piano, bas saans
+Aur bachi hui khamoshi
+Maine khud ko dekha
+Toh dikhi bikhri roshni
+
+Jo bhi bana tha main
+Woh adhoora reh gaya
+Kal ke peeche bhaagte
+Aaj se door reh gaya
+
+Ab gussa bhi thanda hai
+Bas gehri si cheekh
+Main khud ko dhoondhta hun
+Har tooti hui reet
+
+Jo din bach gaye the
+Woh bhi kharch ho gaye
+Mere haath mein sirf
+Kuchh khaali khwab reh gaye
+
+Par sun, main ab rukunga
+Nahin iss daur pe
+Jo mujhe le gaya tha
+Usi se main bolun
+
+Mujhe waapas nahi chahiye
+Woh pehla sa yaar
+Bas itna de de mujhe
+Ek sachha sa vaar
+
+Waqt ne chura liya
+Waqt ne chura liya
+Main tha, par kahin na tha
+Waqt ne chura liya
+
+Kal mera naam tha
+Aaj bas nishaan sa
+Waqt ne chura liya
+Waqt ne chura liya
+
+Aur ab bas static
+Aur phir andhera
+Main kal ka intzaar nahi
+Main khud ka pehra`
   },
 ];

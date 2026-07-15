@@ -1,44 +1,51 @@
 // src/components/Loader.jsx
-import { useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Loader({ onComplete }) {
+  const [locked, setLocked] = useState(false);
+  const [freq, setFreq] = useState(88.0);
+  const raf = useRef();
+
   useEffect(() => {
-    document.body.style.overflow = "hidden"; // lock scroll during intro
-    const t = setTimeout(() => {
-      document.body.style.overflow = "";
-      onComplete();
-    }, 2400);
-    return () => {
-      clearTimeout(t);
-      document.body.style.overflow = "";
+    if (locked) return;
+    let f = 88.0;
+    const tick = () => {
+      f += 0.15;
+      if (f > 108) f = 88;
+      setFreq(f);
+      raf.current = requestAnimationFrame(tick);
     };
-  }, [onComplete]);
+    raf.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf.current);
+  }, [locked]);
+
+  const lock = () => {
+    cancelAnimationFrame(raf.current);
+    setFreq(99.7);
+    setLocked(true);
+    setTimeout(onComplete, 1500);
+  };
 
   return (
-    <motion.div
-      className="loader"
-      initial={{ y: 0 }}
-      exit={{ y: "-100%" }}
-      transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
-    >
-      <div className="loader-inner">
-        <motion.span
-          className="loader-name"
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        >
-          PULKIT J
-        </motion.span>
-        <div className="loader-line">
-          <motion.div
-            className="loader-line-fill"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1] }}
-          />
+    <motion.div className="loader" exit={{ opacity: 0 }} transition={{ duration: 0.6 }}>
+      <div className="tuner">
+        <span className="tuner-freq">{freq.toFixed(1)}</span>
+        <span className="tuner-unit">FM</span>
+        <div className="tuner-bar">
+          <div className="tuner-needle" style={{ left: `${((freq - 88) / 20) * 100}%` }} />
         </div>
+        <AnimatePresence mode="wait">
+          {!locked ? (
+            <motion.button key="tune" className="tuner-btn" onClick={lock} exit={{ opacity: 0 }}>
+              tune in
+            </motion.button>
+          ) : (
+            <motion.span key="on-air" className="tuner-on-air" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              PULKIT J — on air
+            </motion.span>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   );
