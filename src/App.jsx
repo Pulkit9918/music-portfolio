@@ -40,8 +40,6 @@ export default function App() {
     const getScrollLength = () => track.scrollWidth - window.innerWidth;
     const rooms = Array.from(track.querySelectorAll(".room"));
 
-    // Single ScrollTrigger drives everything: horizontal position AND which room is active.
-    // No snap config anywhere — snapping was likely the cause of the jump-around behavior.
     const st = ScrollTrigger.create({
       id: "horizontal",
       trigger: pin,
@@ -55,7 +53,6 @@ export default function App() {
         gsap.set(track, { x: -self.progress * scrollLength });
         useStore.getState().setScrollProgress(self.progress);
 
-        // room detection lives here now — one calculation per frame, not N separate triggers
         const scrollX = self.progress * scrollLength;
         const viewportCenter = scrollX + window.innerWidth / 2;
         for (const room of rooms) {

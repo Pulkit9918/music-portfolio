@@ -10,11 +10,11 @@ import { useStore } from "../store/useStore";
 import { lyrics } from "../data/lyrics";
 
 const ROOM_MOODS = {
-  entrance: { fog: "#10121c", fogNear: 5, fogFar: 24, light: "#6ee7d4", cluster: "#6ee7d4" },
-  music: { fog: "#151a2e", fogNear: 4, fogFar: 20, light: "#8b7fd6", cluster: "#8b7fd6" },
-  lyrics: { fog: "#12182a", fogNear: 4, fogFar: 20, light: "#5fb3d9", cluster: "#5fb3d9" },
-  story: { fog: "#181430", fogNear: 5, fogFar: 22, light: "#b48ee0", cluster: "#b48ee0" },
-  contact: { fog: "#0f1420", fogNear: 6, fogFar: 26, light: "#6ee7d4", cluster: "#6ee7d4" },
+  entrance: { fog: "#1c1410", fogNear: 5, fogFar: 24, light: "#d4a24e", cluster: "#d4a24e" },
+  music:    { fog: "#221912", fogNear: 4, fogFar: 20, light: "#8c5a3c", cluster: "#8c5a3c" },
+  lyrics:   { fog: "#1e1611", fogNear: 4, fogFar: 20, light: "#c98a4e", cluster: "#c98a4e" },
+  story:    { fog: "#241a13", fogNear: 5, fogFar: 22, light: "#d4a24e", cluster: "#d4a24e" },
+  contact:  { fog: "#1a130f", fogNear: 6, fogFar: 26, light: "#8c5a3c", cluster: "#8c5a3c" },
 };
 
 const ROOM_X = { entrance: 0, music: 8, lyrics: 16, story: 24, contact: 32 };
@@ -106,7 +106,9 @@ function NeuralField() {
     }
 
     // Real lyric fragments pulled straight from data/lyrics.js
-    const words = lyrics.flatMap((l) => l.text.split("\n")).flatMap((l) => l.trim().split(" "));
+    const words = lyrics.flatMap((l) => l.sections?.map((s) => s.text) || [l.text || ""])
+      .flatMap((t) => t.split("\n"))
+      .flatMap((line) => line.trim().split(" "));
     const thoughtTexts = [];
     for (let i = 0; i < words.length - 2 && thoughtTexts.length < 10; i += 3) {
       const chunk = words.slice(i, i + 3).join(" ");
@@ -223,7 +225,7 @@ export default function World() {
   return (
     <div className="world-canvas">
       <Canvas camera={{ position: [0, 0, 6], fov: 50 }} dpr={[1, 1.5]} gl={{ alpha: false, antialias: true }}>
-        <color attach="background" args={["#10121c"]} />
+        <color attach="background" args={["#1c1410"]} />
         <ambientLight intensity={0.5} />
         <Atmosphere />
         <NeuralField />

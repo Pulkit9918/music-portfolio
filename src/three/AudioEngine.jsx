@@ -7,9 +7,21 @@ export default function AudioEngine() {
   const ctxRef = useRef(null);
 
   useEffect(() => {
+    const a = audioRef.current;
+
+    const onTimeUpdate = () => useStore.getState().setTime(a.currentTime);
+    const onLoadedMeta = () => useStore.getState().setDuration(a.duration || 0);
+    const onEnded = () => useStore.getState().next();
+
+    a.addEventListener("timeupdate", onTimeUpdate);
+    a.addEventListener("loadedmetadata", onLoadedMeta);
+    a.addEventListener("ended", onEnded);
+
+    window.__audioSeek = (fraction) => {
+      if (a.duration) a.currentTime = fraction * a.duration;
+    };
+
     const unsub = useStore.subscribe((state, prev) => {
-      const a = audioRef.current;
-      if (!a) return;
       if (state.currentTrack && state.currentTrack !== prev.currentTrack) {
         a.src = state.currentTrack.src;
         if (!ctxRef.current) {
@@ -31,7 +43,13 @@ export default function AudioEngine() {
         else a.pause();
       }
     });
-    return unsub;
+
+    return () => {
+      a.removeEventListener("timeupdate", onTimeUpdate);
+      a.removeEventListener("loadedmetadata", onLoadedMeta);
+      a.removeEventListener("ended", onEnded);
+      unsub();
+    };
   }, []);
 
   return <audio ref={audioRef} />;
