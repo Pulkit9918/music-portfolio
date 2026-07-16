@@ -1,7 +1,6 @@
 // src/components/MiniPlayer.jsx
-import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { FiPlay, FiPause, FiChevronUp, FiChevronDown, FiSkipBack, FiSkipForward } from "react-icons/fi";
+// add FiX to the import
+import { FiPlay, FiPause, FiSkipBack, FiSkipForward, FiX } from "react-icons/fi";
 import { useStore } from "../store/useStore";
 
 const fmt = (s) => {
@@ -19,66 +18,53 @@ export default function MiniPlayer() {
   const duration = useStore((s) => s.duration);
   const next = useStore((s) => s.next);
   const prev = useStore((s) => s.prev);
-  const [expanded, setExpanded] = useState(false);
+  const setCurrentTrack = useStore((s) => s.setCurrentTrack);
 
-  const pct = duration ? (time / duration) * 100 : 0;
+  if (!currentTrack) return null;
 
-  const seek = (e) => {
+  const pct = duration > 0 ? (time / duration) * 100 : 0;
+
+  function handleSeek(e) {
+    if (!duration || duration <= 0) return;
     const rect = e.currentTarget.getBoundingClientRect();
-    const fraction = (e.clientX - rect.left) / rect.width;
+    const fraction = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
     window.__audioSeek?.(fraction);
-  };
+  }
+
+  function handleClose() {
+    setPlaying(false);
+    setCurrentTrack(null);
+  }
 
   return (
-    <AnimatePresence>
-      {currentTrack && (
-        <motion.div
-          className="orb-player"
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 100, opacity: 0 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <div className="orb-row">
-            <button className={`orb-disc ${playing ? "spin" : ""}`} onClick={() => setPlaying(!playing)}>
-              {playing ? <FiPause size={14} /> : <FiPlay size={14} style={{ marginLeft: 1 }} />}
-            </button>
+    <div className="player-bar">
+      <div className={`player-disc ${playing ? "spin" : ""}`} />
 
-            <button className="orb-meta" onClick={() => setExpanded((e) => !e)}>
-              <span className="orb-title">{currentTrack.title}</span>
-              <span className="orb-sub">{currentTrack.release || "now playing"}</span>
-              {expanded ? <FiChevronDown className="orb-chevron" /> : <FiChevronUp className="orb-chevron" />}
-            </button>
-          </div>
+      <div className="player-main">
+        <div className="player-meta">
+          <span className="player-title">{currentTrack.title}</span>
+          <span className="player-time">{fmt(time)} / {fmt(duration)}</span>
+        </div>
+        <div className="player-scrub" onClick={handleSeek}>
+          <div className="player-scrub-fill" style={{ width: `${pct}%` }} />
+        </div>
+      </div>
 
-          <AnimatePresence>
-            {expanded && (
-              <motion.div
-                className="orb-panel"
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <div className="orb-progress" onClick={seek}>
-                  <div className="orb-progress-fill" style={{ width: `${pct}%` }} />
-                </div>
-                <div className="orb-times">
-                  <span>{fmt(time)}</span>
-                  <span>{fmt(duration)}</span>
-                </div>
-                <div className="orb-controls">
-                  <button className="orb-btn" onClick={prev}><FiSkipBack size={15} /></button>
-                  <button className="orb-btn orb-btn--main" onClick={() => setPlaying(!playing)}>
-                    {playing ? <FiPause size={16} /> : <FiPlay size={16} style={{ marginLeft: 1 }} />}
-                  </button>
-                  <button className="orb-btn" onClick={next}><FiSkipForward size={15} /></button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
-      )}
-    </AnimatePresence>
+      <div className="player-controls">
+        <button type="button" className="player-btn" onClick={() => prev?.()}>
+          <FiSkipBack size={15} />
+        </button>
+        <button type="button" className="player-btn player-btn--main" onClick={() => setPlaying(!playing)}>
+          {playing ? <FiPause size={16} /> : <FiPlay size={16} style={{ marginLeft: 1 }} />}
+        </button>
+        <button type="button" className="player-btn" onClick={() => next?.()}>
+          <FiSkipForward size={15} />
+        </button>
+      </div>
+
+      <button type="button" className="player-close" onClick={handleClose} aria-label="Close player">
+        <FiX size={14} />
+      </button>
+    </div>
   );
 }

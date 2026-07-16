@@ -1,9 +1,11 @@
 // src/rooms/Entrance.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { playTick } from "../lib/sound";
+import { useStore } from "../store/useStore";
 
 const NAME = "PULKIT J";
+const BAR_COUNT = 80;
 
 const TAGLINES = [
   "quiet songs about loud feelings",
@@ -13,8 +15,8 @@ const TAGLINES = [
 
 export default function Entrance() {
   const [typed, setTyped] = useState("");
-  const [elapsed, setElapsed] = useState(0);
   const [lineIdx, setLineIdx] = useState(0);
+  const barsRef = useRef([]);
 
   useEffect(() => {
     let i = 0;
@@ -23,8 +25,7 @@ export default function Entrance() {
       setTyped(NAME.slice(0, i));
       if (i >= NAME.length) clearInterval(type);
     }, 90);
-    const timer = setInterval(() => setElapsed((e) => e + 1), 1000);
-    return () => { clearInterval(type); clearInterval(timer); };
+    return () => clearInterval(type);
   }, []);
 
   useEffect(() => {
@@ -32,30 +33,45 @@ export default function Entrance() {
     return () => clearInterval(id);
   }, []);
 
-  const mm = String(Math.floor(elapsed / 60)).padStart(2, "0");
-  const ss = String(elapsed % 60).padStart(2, "0");
+  // waveform bars: idle breathing, or real audio-reactive once a track plays
+  useEffect(() => {
+    let raf;
+    let buf = null;
+    const t0 = performance.now();
+
+    const tick = () => {
+      const { analyser, playing } = useStore.getState();
+      const elapsed = (performance.now() - t0) / 1000;
+
+      if (analyser && playing) {
+        if (!buf || buf.length !== analyser.frequencyBinCount) buf = new Uint8Array(analyser.frequencyBinCount);
+        analyser.getByteFrequencyData(buf);
+        barsRef.current.forEach((el, i) => {
+          if (!el) return;
+          const idx = Math.floor((i / BAR_COUNT) * buf.length * 0.6);
+          const v = buf[idx] / 255;
+          el.style.height = `${8 + v * 52}px`;
+        });
+      } else {
+        barsRef.current.forEach((el, i) => {
+          if (!el) return;
+          const v = 8 + Math.sin(elapsed * 0.8 + i * 0.4) * 6;
+          el.style.height = `${v}px`;
+        });
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    tick();
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   return (
     <section className="room room--entrance" data-room="entrance">
       <div className="tape-deck">
         <div className="tape-waveform">
-          {Array.from({ length: 80 }).map((_, i) => (
-            <span
-              key={i}
-              className="tape-bar"
-              style={{
-                animationDelay: `${i * 0.04}s`,
-                height: `${8 + Math.sin(i * 0.4) * 6 + Math.random() * 8}px`,
-              }}
-            />
+          {Array.from({ length: BAR_COUNT }).map((_, i) => (
+            <span key={i} ref={(el) => (barsRef.current[i] = el)} className="tape-bar" />
           ))}
-        </div>
-
-        <div className="tape-readout">
-          <span className="tape-rec">
-            <span className="tape-rec-dot" /> REC
-          </span>
-          <span className="tape-time">{mm}:{ss}</span>
         </div>
 
         <h1 className="tape-title">

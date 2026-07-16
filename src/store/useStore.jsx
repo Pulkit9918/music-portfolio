@@ -22,13 +22,15 @@ export const useStore = create((set, get) => ({
   next: () => {
     const { currentTrack } = get();
     if (!currentTrack) return;
-    const nextIdx = (currentTrack.index + 1) % tracks.length;
+    const currentIdx = tracks.findIndex((t) => t.src === currentTrack.src);
+    const nextIdx = (currentIdx + 1 + tracks.length) % tracks.length;
     set({ currentTrack: tracks[nextIdx], playing: true, time: 0, duration: 0 });
   },
   prev: () => {
     const { currentTrack } = get();
     if (!currentTrack) return;
-    const prevIdx = (currentTrack.index - 1 + tracks.length) % tracks.length;
+    const currentIdx = tracks.findIndex((t) => t.src === currentTrack.src);
+    const prevIdx = (currentIdx - 1 + tracks.length) % tracks.length;
     set({ currentTrack: tracks[prevIdx], playing: true, time: 0, duration: 0 });
   },
 }));
