@@ -1,5 +1,3 @@
-// src/components/MiniPlayer.jsx
-// add FiX to the import
 import { FiPlay, FiPause, FiSkipBack, FiSkipForward, FiX } from "react-icons/fi";
 import { useStore } from "../store/useStore";
 

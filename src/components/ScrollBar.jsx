@@ -1,4 +1,3 @@
-// src/components/ScrollBar.jsx
 import { useEffect, useRef } from "react";
 import { useStore } from "../store/useStore";
 

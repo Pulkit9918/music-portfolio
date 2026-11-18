@@ -1,20 +1,18 @@
-// src/three/World.jsx
 import { useRef, useEffect } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import { EffectComposer, Bloom, Vignette, Noise, DepthOfField } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
 import CameraRig from "./CameraRig";
-import AlbumPlane from "./AlbumPlane";
 import { useStore } from "../store/useStore";
 import { lyrics } from "../data/lyrics";
 
 const ROOM_MOODS = {
-  entrance: { fog: "#1c1410", fogNear: 5, fogFar: 24, light: "#d4a24e", cluster: "#d4a24e" },
-  music:    { fog: "#221912", fogNear: 4, fogFar: 20, light: "#8c5a3c", cluster: "#8c5a3c" },
-  lyrics:   { fog: "#1e1611", fogNear: 4, fogFar: 20, light: "#c98a4e", cluster: "#c98a4e" },
-  story:    { fog: "#241a13", fogNear: 5, fogFar: 22, light: "#d4a24e", cluster: "#d4a24e" },
-  contact:  { fog: "#1a130f", fogNear: 6, fogFar: 26, light: "#8c5a3c", cluster: "#8c5a3c" },
+  entrance: { fog: "#05060a", fogNear: 5, fogFar: 24, light: "#4da6ff", cluster: "#0099ff" },
+  music:    { fog: "#07060d", fogNear: 4, fogFar: 20, light: "#7c5cff", cluster: "#7c5cff" },
+  lyrics:   { fog: "#05080d", fogNear: 4, fogFar: 20, light: "#22d3ee", cluster: "#22d3ee" },
+  story:    { fog: "#08060d", fogNear: 5, fogFar: 22, light: "#a78bfa", cluster: "#a78bfa" },
+  contact:  { fog: "#05060a", fogNear: 6, fogFar: 26, light: "#0099ff", cluster: "#0099ff" },
 };
 
 const ROOM_X = { entrance: 0, music: 8, lyrics: 16, story: 24, contact: 32 };
@@ -23,15 +21,15 @@ function Atmosphere() {
   const { scene } = useThree();
   useEffect(() => {
     let raf;
-    const light = new THREE.DirectionalLight("#ff8c42", 1.4);
+    const light = new THREE.DirectionalLight("#4da6ff", 1.4);
     light.position.set(3, 4, 3);
     scene.add(light);
-    if (!scene.fog) scene.fog = new THREE.Fog("#2a2e38", 5, 24);
-    const current = new THREE.Color("#2a2e38");
-    const currentLight = new THREE.Color("#ff8c42");
+    const current = new THREE.Color("#05060a");
+    const currentLight = new THREE.Color("#4da6ff");
     const tick = () => {
       const room = useStore.getState().currentRoom;
       const mood = ROOM_MOODS[room] || ROOM_MOODS.entrance;
+      if (!scene.fog) { raf = requestAnimationFrame(tick); return; }
       current.lerp(new THREE.Color(mood.fog), 0.03);
       scene.fog.color.copy(current);
       scene.fog.near = THREE.MathUtils.lerp(scene.fog.near, mood.fogNear, 0.03);
@@ -73,11 +71,9 @@ function NeuralField() {
     window.addEventListener("mousemove", onMove);
 
     const group = new THREE.Group();
-    const NODE_COUNT = 100; // denser, so clusters visually connect across rooms
+    const NODE_COUNT = 100;
     const nodes = [];
 
-    // Musical geometries: torus reads as a "note loop", octahedron as a shard/chime,
-    // ring as a cymbal/halo, icosahedron as a plain thought-node
     const noteGeo = new THREE.TorusGeometry(0.07, 0.022, 8, 16);
     const chimeGeo = new THREE.OctahedronGeometry(0.06, 0);
     const haloGeo = new THREE.RingGeometry(0.07, 0.09, 20);
@@ -99,13 +95,12 @@ function NeuralField() {
       const mesh = new THREE.Mesh(geo, mat);
       mesh.position.set(baseX + (Math.random() - 0.5) * 6, (Math.random() - 0.5) * 8, (Math.random() - 0.5) * 10);
       mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
-      const baseScale = 0.9 + Math.random() * 0.7;
+      const baseScale = 1.2 + Math.random() * 0.9;
       mesh.scale.setScalar(baseScale);
       group.add(mesh);
       nodes.push({ mesh, spin: (Math.random() - 0.5) * 0.4, bob: Math.random() * Math.PI * 2, speed: 0.2 + Math.random() * 0.3, baseScale, baseEmissive: 0.55 });
     }
 
-    // Real lyric fragments pulled straight from data/lyrics.js
     const words = lyrics.flatMap((l) => l.sections?.map((s) => s.text) || [l.text || ""])
       .flatMap((t) => t.split("\n"))
       .flatMap((line) => line.trim().split(" "));
@@ -117,7 +112,7 @@ function NeuralField() {
     if (!thoughtTexts.length) thoughtTexts.push("quiet songs", "loud feelings", "slow morning");
     thoughtTexts.forEach((text, i) => {
       const sprite = makeThoughtSprite(text);
-      sprite.position.set(4 + i * 3.2, (Math.random() - 0.5) * 6, -6 - (Math.random() * 4)); // pushed back in Z
+      sprite.position.set(4 + i * 3.2, (Math.random() - 0.5) * 6, -6 - (Math.random() * 4));
       group.add(sprite);
       nodes.push({ mesh: sprite, bob: Math.random() * Math.PI * 2, speed: 0.15, isThought: true });
     });
@@ -128,12 +123,12 @@ function NeuralField() {
     const maxLines = NODE_COUNT * 2;
     const linePositions = new Float32Array(maxLines * 2 * 3);
     lineGeo.setAttribute("position", new THREE.BufferAttribute(linePositions, 3));
-    const lineMat = new THREE.LineBasicMaterial({ color: "#ff8c42", transparent: true, opacity: 0.12 });
+    const lineMat = new THREE.LineBasicMaterial({ color: "#4da6ff", transparent: true, opacity: 0.12 });
     const lines = new THREE.LineSegments(lineGeo, lineMat);
     scene.add(lines);
 
     const sparkGeo = new THREE.SphereGeometry(0.04, 8, 8);
-    const sparkMat = new THREE.MeshBasicMaterial({ color: "#ffd27a", transparent: true, opacity: 0 });
+    const sparkMat = new THREE.MeshBasicMaterial({ color: "#9ec5ff", transparent: true, opacity: 0 });
     const spark = new THREE.Mesh(sparkGeo, sparkMat);
     scene.add(spark);
     let lastScrollProgress = 0;
@@ -225,12 +220,12 @@ export default function World() {
   return (
     <div className="world-canvas">
       <Canvas camera={{ position: [0, 0, 6], fov: 50 }} dpr={[1, 1.5]} gl={{ alpha: false, antialias: true }}>
-        <color attach="background" args={["#1c1410"]} />
+        <color attach="background" args={["#050507"]} />
+        <fog attach="fog" args={["#05060a", 5, 24]} />
         <ambientLight intensity={0.5} />
         <Atmosphere />
         <NeuralField />
         <CameraRig />
-        <AlbumPlane />
         <EffectComposer>
           <DepthOfField focusDistance={0.02} focalLength={0.05} bokehScale={3} />
           <Bloom intensity={0.6} luminanceThreshold={0.25} luminanceSmoothing={0.4} mipmapBlur />

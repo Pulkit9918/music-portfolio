@@ -1,11 +1,15 @@
-// src/rooms/Entrance.jsx
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { FiPlay, FiPause, FiArrowRight } from "react-icons/fi";
+import Visualizer from "../components/Visualizer";
+import SplitReveal from "../components/SplitReveal";
 import { playTick } from "../lib/sound";
+import { goToRoom } from "../lib/goToRoom";
 import { useStore } from "../store/useStore";
+import { releases, tracks } from "../data/releases";
+import { lyrics } from "../data/lyrics";
 
-const NAME = "PULKIT J";
-const BAR_COUNT = 80;
+const FALLBACK_COVER = "/images/covers/sleeve-art.jpg";
 
 const TAGLINES = [
   "quiet songs about loud feelings",
@@ -14,95 +18,126 @@ const TAGLINES = [
 ];
 
 export default function Entrance() {
-  const [typed, setTyped] = useState("");
-  const [lineIdx, setLineIdx] = useState(0);
-  const barsRef = useRef([]);
+  const CHAPTERS = [
+    { key: "music", n: "01", title: "Music", meta: `${tracks.length} tracks` },
+    { key: "lyrics", n: "02", title: "Lyrics", meta: `${lyrics.length} songs` },
+    { key: "story", n: "03", title: "About", meta: "The story" },
+    { key: "contact", n: "04", title: "Contact", meta: "Say hello" },
+  ];
 
-  useEffect(() => {
-    let i = 0;
-    const type = setInterval(() => {
-      i++;
-      setTyped(NAME.slice(0, i));
-      if (i >= NAME.length) clearInterval(type);
-    }, 90);
-    return () => clearInterval(type);
-  }, []);
+  const [lineIdx, setLineIdx] = useState(0);
+  const playing = useStore((s) => s.playing);
+  const currentTrack = useStore((s) => s.currentTrack);
+  const setCurrentTrack = useStore((s) => s.setCurrentTrack);
+  const setPlaying = useStore((s) => s.setPlaying);
+  const latest = releases[0];
 
   useEffect(() => {
     const id = setInterval(() => setLineIdx((i) => (i + 1) % TAGLINES.length), 3200);
     return () => clearInterval(id);
   }, []);
 
-  // waveform bars: idle breathing, or real audio-reactive once a track plays
-  useEffect(() => {
-    let raf;
-    let buf = null;
-    const t0 = performance.now();
+  const onPlay = () => {
+    if (!currentTrack) {
+      if (!tracks.length) return;
+      setCurrentTrack(tracks[0]);
+      setPlaying(true);
+    } else {
+      setPlaying(!playing);
+    }
+    playTick();
+  };
 
-    const tick = () => {
-      const { analyser, playing } = useStore.getState();
-      const elapsed = (performance.now() - t0) / 1000;
-
-      if (analyser && playing) {
-        if (!buf || buf.length !== analyser.frequencyBinCount) buf = new Uint8Array(analyser.frequencyBinCount);
-        analyser.getByteFrequencyData(buf);
-        barsRef.current.forEach((el, i) => {
-          if (!el) return;
-          const idx = Math.floor((i / BAR_COUNT) * buf.length * 0.6);
-          const v = buf[idx] / 255;
-          el.style.height = `${8 + v * 52}px`;
-        });
-      } else {
-        barsRef.current.forEach((el, i) => {
-          if (!el) return;
-          const v = 8 + Math.sin(elapsed * 0.8 + i * 0.4) * 6;
-          el.style.height = `${v}px`;
-        });
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    tick();
-    return () => cancelAnimationFrame(raf);
-  }, []);
+  const ringText = `PULKIT J ✺ ${latest ? latest.title : "MUSIC"} ✺ NOW PLAYING ✺ `.toUpperCase();
 
   return (
     <section className="room room--entrance" data-room="entrance">
-      <div className="tape-deck">
-        <div className="tape-waveform">
-          {Array.from({ length: BAR_COUNT }).map((_, i) => (
-            <span key={i} ref={(el) => (barsRef.current[i] = el)} className="tape-bar" />
-          ))}
-        </div>
+      <div className="hero-stage">
+        <div className="hero-glow" aria-hidden="true" />
 
-        <h1 className="tape-title">
-          {typed}
-          <span className="tape-cursor">|</span>
+        {latest && (
+          <motion.span className="hero-chip" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.9 }}>
+            <i /> New {latest.type} — {latest.title}
+          </motion.span>
+        )}
+
+        <h1 className="hero-name" aria-label="PULKIT J">
+          <SplitReveal text="PULKIT" mode="chars" trigger="mount" delay={0.15} stagger={0.07} />{" "}
+          <SplitReveal text="J" mode="chars" trigger="mount" delay={0.65} className="grad" />
         </h1>
 
-        <div className="tape-tagline-wrap">
-          <AnimatePresence mode="wait">
-            <motion.p
-              key={lineIdx}
-              className="tape-tagline"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            >
-              {TAGLINES[lineIdx]}
-            </motion.p>
-          </AnimatePresence>
-        </div>
+        <motion.div className="hero-sub" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 1.0 }}>
+          <div className="hero-tagline-wrap">
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={lineIdx}
+                className="hero-tagline"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.5 }}
+              >
+                {TAGLINES[lineIdx]}
+              </motion.p>
+            </AnimatePresence>
+          </div>
+          <div className="hero-actions">
+            <button type="button" className="btn btn--accent" onClick={onPlay} onMouseEnter={playTick}>
+              {playing ? <FiPause size={15} /> : <FiPlay size={15} />} {playing ? "Pause" : `Play the ${latest ? latest.type : "music"}`}
+            </button>
+            <button type="button" className="btn" onClick={() => goToRoom("music")} onMouseEnter={playTick}>
+              Browse music <FiArrowRight size={15} />
+            </button>
+          </div>
+        </motion.div>
 
-        <motion.span
-          className="tape-cta"
-          onMouseEnter={playTick}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.6 }}
-        >
-          play the tape →
-        </motion.span>
+        <div className="hero-vinyl">
+          <motion.div
+            className="vinyl-anim"
+            initial={{ opacity: 0, scale: 0.85, rotate: -14 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ duration: 1.4, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <Visualizer mode="ring" count={72} className="vinyl-viz" />
+            <div className={`vinyl-disc ${playing ? "is-playing" : ""}`} data-cursor={playing ? "Pause" : "Play"} onClick={onPlay}>
+              <svg className="vinyl-text" viewBox="0 0 200 200" aria-hidden="true">
+                <defs><path id="vinyl-circle" d="M100,100 m-86,0 a86,86 0 1,1 172,0 a86,86 0 1,1 -172,0" /></defs>
+                <text><textPath href="#vinyl-circle" textLength="530" lengthAdjust="spacing">{ringText}</textPath></text>
+              </svg>
+              <div className="vinyl-label">
+                <img
+                  src={latest?.cover}
+                  alt=""
+                  onError={(e) => { if (!e.currentTarget.src.endsWith(FALLBACK_COVER)) e.currentTarget.src = FALLBACK_COVER; }}
+                />
+              </div>
+            </div>
+            <div className="vinyl-sheen" />
+          </motion.div>
+        </div>
+      </div>
+
+      <Visualizer mode="bars" count={140} className="hero-wave" />
+
+      <div className="chapters">
+        {CHAPTERS.map((c, i) => (
+          <motion.button
+            key={c.key}
+            type="button"
+            className="chapter"
+            data-cursor="Go"
+            onClick={() => goToRoom(c.key)}
+            onMouseEnter={playTick}
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.2 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <span className="chapter-n">{c.n}</span>
+            <span className="chapter-title">{c.title}</span>
+            <span className="chapter-meta">{c.meta}</span>
+            <FiArrowRight className="chapter-arrow" size={18} />
+          </motion.button>
+        ))}
       </div>
     </section>
   );

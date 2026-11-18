@@ -1,7 +1,4 @@
-// src/data/releases.js
-// Fill in your real songs, grouped by release. Types: "Single" | "EP" | "Album" | "Demo"
 export const releases = [
-
   {
     id: "midnight-ep",
     title: "Midnight Pages",
@@ -15,11 +12,24 @@ export const releases = [
       { title: "Lost Time", src: "/audio/track4.mp3" },
     ],
   },
+  {
+    id: "single-1",
+    title: "Tum Paas Nahi",
+    type: "Single",
+    year: 2026,
+    cover: "/images/covers/single-1.jpg", 
+    tracks: [{ title: "Tum Paas Nahi", src: "/audio/single-1.mp3" }],
+  },
+  {
+    id: "single-2",
+    title: "Tera Pata", 
+    type: "Single",
+    year: 2026,
+    cover: "/images/covers/single-2.jpg",
+    tracks: [{ title: "Tera Pata", src: "/audio/single-2.mp3" }],
+  },
 ];
 
-export const tracks = [];
-releases.forEach((r) => {
-  r.tracks.forEach((t) => {
-    tracks.push({ ...t, release: r.title, type: r.type, year: r.year, cover: r.cover, index: tracks.length });
-  });
-});
+export const tracks = releases.flatMap((r) =>
+  r.tracks.map((t) => ({ ...t, release: r.title, type: r.type, year: r.year, cover: r.cover }))
+);

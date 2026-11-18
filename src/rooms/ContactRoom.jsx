@@ -1,7 +1,14 @@
-// src/rooms/ContactRoom.jsx
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { FiInstagram, FiMail, FiMusic, FiMonitor } from "react-icons/fi";
+import { FiArrowUpRight, FiArrowRight } from "react-icons/fi";
+import SplitReveal from "../components/SplitReveal";
+
+const LINKS = [
+  { label: "Email", href: "pulkitjain9918@gmail.com" },
+  { label: "Instagram", href: "https://instagram.com/pulkit.reverb" },
+  { label: "Spotify", href: "https://open.spotify.com" },
+  { label: "Website", href: "https://jain-pulkit.com" },
+];
 
 const encode = (data) =>
   Object.keys(data).map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(data[k])).join("&");
@@ -22,50 +29,60 @@ export default function ContactRoom() {
 
   return (
     <section className="room room--contact" data-room="contact">
-      <div className="contact-card">
-        <div className="contact-side">
-          <p className="eyebrow">Get in touch</p>
-          <h2 className="room-title contact-heading">Let's make something.</h2>
-          <p className="contact-note">
-            Booking, collaborations, session work, or just to say the song meant something.
-            I read everything myself.
-          </p>
-          <div className="contact-socials">
-            <a href="mailto:you@example.com" aria-label="Email"><FiMail size={18} /></a>
-            <a href="https://instagram.com/yourhandle" target="_blank" rel="noreferrer" aria-label="Instagram"><FiInstagram size={18} /></a>
-            <a href="https://open.spotify.com" target="_blank" rel="noreferrer" aria-label="Spotify"><FiMusic size={18} /></a>
-            <a href="https://jain-pulkit.com" target="_blank" rel="noopener noreferrer"> <FiMonitor size={18} /></a>
+      <span className="watermark" data-parallax="0.22" aria-hidden="true">HELLO</span>
+
+      <div className="room-wrap">
+        <div className="contact-grid">
+          <div>
+            <span className="label" style={{ display: "block", marginBottom: 20 }}><b>04</b> — Contact</span>
+            <h2 className="contact-title">
+              <SplitReveal text="Let's make" /><br /><SplitReveal text="something" delay={0.2} className="grad" /><span className="accent">.</span>
+            </h2>
+            <p className="contact-note">
+              Booking, collaborations, session work, or just to say the song meant something. I read everything myself.
+            </p>
+            <div className="link-pills">
+              {LINKS.map((l) => (
+                <a key={l.label} className="pill-link" href={l.href} target={l.href.startsWith("http") ? "_blank" : undefined} rel="noreferrer">
+                  {l.label} <FiArrowUpRight size={14} />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div className="card spot form-card">
+            {status === "sent" ? (
+              <motion.div className="contact-thanks" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+                <span className="label"><b>●</b> Sent</span>
+                <h3>Thanks — talk soon.</h3>
+                <p className="contact-note" style={{ margin: 0 }}>I'll be in touch as soon as I can.</p>
+              </motion.div>
+            ) : (
+              <form name="booking" method="POST" data-netlify="true" onSubmit={submit} className="contact-form">
+                <input type="hidden" name="form-name" value="booking" />
+                <div className="field">
+                  <label htmlFor="c-name">Name</label>
+                  <input id="c-name" name="name" value={form.name} onChange={change} required />
+                </div>
+                <div className="field">
+                  <label htmlFor="c-email">Email</label>
+                  <input id="c-email" type="email" name="email" value={form.email} onChange={change} required />
+                </div>
+                <div className="field">
+                  <label htmlFor="c-msg">Message</label>
+                  <textarea id="c-msg" name="message" value={form.message} onChange={change} required />
+                </div>
+                <button type="submit" className="btn btn--accent contact-submit" disabled={status === "sending"}>
+                  {status === "sending" ? "Sending…" : status === "error" ? "Something went wrong — try again" : "Send message"}
+                  <FiArrowRight size={16} />
+                </button>
+              </form>
+            )}
           </div>
         </div>
-
-        <div className="contact-form-side">
-          {status === "sent" ? (
-            <motion.div className="contact-thanks" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-              <span className="contact-thanks-mark">✦</span>
-              <p>Thanks — I'll be in touch soon.</p>
-            </motion.div>
-          ) : (
-            <form name="booking" method="POST" data-netlify="true" onSubmit={submit} className="contact-form">
-              <input type="hidden" name="form-name" value="booking" />
-              <div className="field">
-                <label>Name</label>
-                <input name="name" value={form.name} onChange={change} required />
-              </div>
-              <div className="field">
-                <label>Email</label>
-                <input type="email" name="email" value={form.email} onChange={change} required />
-              </div>
-              <div className="field">
-                <label>Message</label>
-                <textarea name="message" value={form.message} onChange={change} required />
-              </div>
-              <button type="submit" className="btn contact-submit" disabled={status === "sending"}>
-                {status === "sending" ? "Sending…" : "Send message"}
-              </button>
-            </form>
-          )}
-        </div>
       </div>
+
+      <span className="label contact-foot">© {new Date().getFullYear()} Pulkit J</span>
     </section>
   );
 }
